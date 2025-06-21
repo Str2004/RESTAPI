@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            max-width: 600px; 
+            margin: auto; 
+            background-color: #f0f0f0;
+        }
+        h1 { 
+            text-align: center; 
+            color: #00698f;
+        }
+        .task { 
+            margin: 10px 0; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 6px; 
+            background-color: #fff;
+        }
+        .completed { 
+            text-decoration: line-through; 
+            color: gray; 
+        }
+        button { 
+            margin-left: 10px; 
+            background-color: #00698f; 
+            color: #fff; 
+            border: none; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0088cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task Manager</h1>
+    <form id="task-form">
+        <input type="text" id="title" placeholder="Task title" required>
+        <input type="text" id="description" placeholder="Description">
+        <button type="submit">Add Task</button>
+    </form>
+    <div id="tasks"></div>
+
+    <script>
+        const api = 'http://localhost:5000/tasks';
+
+        async function loadTasks() {
+            const res = await fetch(api);
+            const tasks = await res.json();
+            const container = document.getElementById('tasks');
+            container.innerHTML = '';
+            tasks.forEach(task => {
+                const div = document.createElement('div');
+                div.className = 'task';
+                div.innerHTML = `
+                    <span class="${task.completed ? 'completed' : ''}"><b>${task.title}</b>: ${task.description}</span>
+                    <button onclick="deleteTask('${task._id}')">Delete</button>
+                    <button onclick="toggleTask('${task._id}', ${!task.completed})">${task.completed ? 'Undo' : 'Complete'}</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        async function deleteTask(id) {
+            await fetch(`${api}/${id}`, { method: 'DELETE' });
+            loadTasks();
+        }
+
+        async function toggleTask(id, completed) {
+            const res = await fetch(`${api}/${id}`);
+            const task = await res.json();
+            await fetch(`${api}/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ ...task, completed })
+            });
+            loadTasks();
+        }
+
+        document.getElementById('task-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            await fetch(api, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ title, description })
+            });
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
+            loadTasks();
+        });
+
+        loadTasks();
+    </script>
+</body>
+</html>
