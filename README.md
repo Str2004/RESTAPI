@@ -79,6 +79,7 @@ pytest --cov=app --cov-report=html
 
 ![Coverage](./htmlcov/coverage-screenshot.png)
 
+
 > Generated from `htmlcov/index.html` after test run.
 
 ---
