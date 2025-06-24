@@ -1,104 +1,119 @@
-# 🧠 Task Manager API (Flask + MongoDB)
+# ✅ Task Manager API with Full Test Suite (Flask + MongoDB)
 
-This is a simple REST API for managing tasks, built using Flask and MongoDB. It supports full CRUD operations and can be used with a frontend or Postman.
+This is a simple **REST API** for managing tasks using **Flask** and **MongoDB**. It supports full **CRUD operations** and includes complete **unit**, **integration**, and **API endpoint tests** with **test coverage reporting**.
 
 ---
 
 ## 🚀 API Endpoints
 
-| Method | Endpoint           | Description             |
-|--------|--------------------|-------------------------|
-| GET    | `/tasks`           | Get all tasks           |
-| POST   | `/tasks`           | Create a new task       |
-| PUT    | `/tasks/<id>`      | Update an existing task |
-| DELETE | `/tasks/<id>`      | Delete a task           |
+| Method | Endpoint        | Description             |
+|--------|------------------|-------------------------|
+| GET    | `/tasks`         | Get all tasks           |
+| POST   | `/tasks`         | Create a new task       |
+| PUT    | `/tasks/<id>`    | Update an existing task |
+| DELETE | `/tasks/<id>`    | Delete a task           |
+
+> Full endpoint details available in [`API_DOC.md`](./API_DOC.md)
 
 ---
 
-## 🛠 How to Run (Server)
+## 🧰 Tech Stack
+
+- **Backend**: Flask + MongoDB
+- **Database**: MongoDB Atlas (or local MongoDB)
+- **Testing**: Pytest, pytest-cov, mongomock
+
+---
+
+## 🛠 How to Run the App
 
 ### 1. Install dependencies:
-```
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Update MongoDB URI in `app.py`:
-Replace:
-```
-<username>, <password>
-```
-with your MongoDB Atlas credentials.
+### 2. Set your MongoDB URI (optional for testing):
+```bash
+# Windows
+set MONGO_URI=mongodb://localhost:27017/taskmanager
 
-### 3. Run the app:
+# Linux/macOS
+export MONGO_URI=mongodb://localhost:27017/taskmanager
 ```
+
+### 3. Start the Flask server:
+```bash
 python app.py
 ```
 
 ---
 
-## 🧪 Sample curl Commands
+## 🧪 How to Run Tests
 
-### Create a Task
-```
-curl -X POST http://localhost:5000/tasks -H "Content-Type: application/json" -d "{"title": "Test Task", "description": "Do something"}"
-```
-
-### Get All Tasks
-```
-curl http://localhost:5000/tasks
+### Install testing tools:
+```bash
+pip install pytest pytest-cov mongomock
 ```
 
-### Update a Task
-```
-curl -X PUT http://localhost:5000/tasks/<id> -H "Content-Type: application/json" -d "{"title": "Updated", "completed": true}"
+### Run all tests with coverage:
+```bash
+pytest --cov=app --cov-report=html
 ```
 
-### Delete a Task
-```
-curl -X DELETE http://localhost:5000/tasks/<id>
-```
+- Unit Tests → Logic
+- Integration Tests → MongoDB mock
+- API Tests → Flask route testing with test client
+
+---
+
+## ✅ Test Results
+
+- ✔ `test_unit.py` – 2 tests
+- ✔ `test_integration.py` – 2 tests
+- ✔ `test_api.py` – 3 tests
+- ✅ **All 7 tests passed**
+
+---
+
+## 📊 Test Coverage Screenshot
+
+![Coverage](./htmlcov/coverage-screenshot.png)
+
+> Generated from `htmlcov/index.html` after test run.
 
 ---
 
 ## 📦 Project Structure
 
 ```
-task_manager_api_flask/
+task-manager-api-with-frontend/
 ├── app.py
 ├── requirements.txt
-└── README.md
+├── tests/
+│   ├── test_unit.py
+│   ├── test_integration.py
+│   └── test_api.py
+├── htmlcov/
+│   └── coverage-screenshot.png
+├── API_DOC.md
+├── README.md
 ```
-
-
----
-
-## 🌐 Frontend
-
-A simple HTML frontend is provided in `templates/index.html`.
-
-### ▶ How to use it:
-1. Make sure your Flask app is running
-2. Open `templates/index.html` in your browser
-3. Use the form to create, update, and delete tasks
 
 ---
 
 ## 📤 GitHub Submission Instructions
 
-1. Create a GitHub repository (e.g., `task-manager-api`)
-2. Push this full folder:
-   ```
-   git init
-   git add .
-   git commit -m "Initial commit - Flask Task Manager API"
-   git branch -M main
-   git remote add origin https://github.com/yourusername/task-manager-api.git
-   git push -u origin main
-   ```
+```bash
+git init
+git add .
+git commit -m "Added tests and coverage for Flask API"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git push -u origin main
+```
 
 ---
 
-## 🧾 Included Docs
+## 👨‍💻 Author
 
-- `README.md` (this file)
-- `API_DOC.md` (endpoint-level documentation)
+**Abhilash Dalai**

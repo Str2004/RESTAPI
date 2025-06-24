@@ -2,11 +2,15 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-client = MongoClient("mongodb+srv://abhilashdalai2004:Abhi123@cluster0.13er5yi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+# Use local or env-based URI for testing/deployment flexibility
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/taskmanager")
+client = MongoClient(MONGO_URI)
 db = client["taskmanager"]
 tasks = db["tasks"]
 
@@ -35,9 +39,14 @@ def create_task():
 
 @app.route('/tasks/<id>', methods=['PUT'])
 def update_task(id):
+    try:
+        object_id = ObjectId(id)
+    except InvalidId:
+        return jsonify({"error": "Invalid task ID"}), 400
+
     data = request.get_json()
     result = tasks.update_one(
-        {"_id": ObjectId(id)},
+        {"_id": object_id},
         {"$set": {
             "title": data.get("title"),
             "description": data.get("description"),
@@ -50,7 +59,12 @@ def update_task(id):
 
 @app.route('/tasks/<id>', methods=['DELETE'])
 def delete_task(id):
-    result = tasks.delete_one({"_id": ObjectId(id)})
+    try:
+        object_id = ObjectId(id)
+    except InvalidId:
+        return jsonify({"error": "Invalid task ID"}), 400
+
+    result = tasks.delete_one({"_id": object_id})
     if result.deleted_count:
         return jsonify({"message": "Task deleted"}), 200
     return jsonify({"error": "Task not found"}), 404
